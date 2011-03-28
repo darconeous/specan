@@ -38,6 +38,8 @@ void xtalClock();
 #define LCDRst P1_1
 #define LED_RED  P2_3
 #define LED_GREEN P2_4
+#define LCD_BACKLIGHT P2_0
+
 // plus SPI ports driven from USART0 are:
 // MOSI P0_3
 // SCK P0_5

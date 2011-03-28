@@ -49,8 +49,9 @@ void setIOPorts() {
 	P0SEL |= (BIT5 | BIT3 ); // set SCK and MOSI as peripheral outputs
 	P0DIR |= BIT4 | BIT2; // set SSN and A0 as outputs
 	P1DIR |= BIT1; // set LCDRst as output
-	P2DIR = BIT3 | BIT4; // set LEDs  as outputs
+	P2DIR = BIT3 | BIT4 | BIT0; // set LEDs  as outputs
 	//LED_GREEN = LOW; // Turn the Green LED on (LEDs driven by reverse logic: 0 is ON)
+	//LED_RED = LOW;
 }
 
 // Set a clock rate of approx. 2.5 Mbps for 26 MHz Xtal clock
@@ -83,6 +84,8 @@ void LCDReset(void) {
 	sleepMillis(1);
 	LCDRst = HIGH;
 	SSN = LOW;
+	LCD_BACKLIGHT = HIGH;
+
 	// send the initialisation commands to the LCD display
 	txCtl(0xe2); // RESET cmd
 	txCtl(0x24); // set internal resistor ratio
@@ -101,6 +104,7 @@ void LCDPowerSave() { // not tested yet; taken from spi trace
 	txCtl(0xac); // static indicator off cmd
 	txCtl(0xae); // LCD off
 	txCtl(0xa5); // Display all Points on cmd = Power Save when following LCD off
+	LCD_BACKLIGHT = LOW;
 }
 
 void setCursor(unsigned char row, unsigned char col) {
