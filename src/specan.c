@@ -38,6 +38,7 @@ bit sleepy;
 u8 vscroll;
 u8 min_chan;
 u8 max_chan;
+u32 sleep_timer;
 
 /* plot one value of bar chart */
 void plot(u8 col) {
@@ -386,15 +387,19 @@ void poll_keyboard() {
 
 	switch (getkey()) {
 	case 'W':
+		sleep_timer = 0;
 		set_width(WIDE);
 		break;
 	case 'N':
+		sleep_timer = 0;
 		set_width(NARROW);
 		break;
 	case 'U':
+		sleep_timer = 0;
 		set_width(ULTRAWIDE);
 		break;
 	case KMNU:
+		sleep_timer = 0;
 		switch (width) {
 		case WIDE:
 			set_width(NARROW);
@@ -408,29 +413,37 @@ void poll_keyboard() {
 		}
 		break;
 	case 'T':
+		sleep_timer = 0;
 		height = TALL;
 		break;
 	case 'S':
+		sleep_timer = 0;
 		height = SHORT;
 		break;
 	case KBYE:
+		sleep_timer = 0;
 		height = !height;
 		break;
 	case '>':
+		sleep_timer = 0;
 		user_freq += hstep;
 		break;
 	case '<':
+		sleep_timer = 0;
 		user_freq -= hstep;
 		break;
 	case '^':
 	case 'Q':
+		sleep_timer = 0;
 		vscroll = MIN(vscroll + vstep, MAX_VSCROLL);
 		break;
 	case KDWN:
 	case 'A':
+		sleep_timer = 0;
 		vscroll = MAX(vscroll - vstep, MIN_VSCROLL);
 		break;
 	case 'M':
+		sleep_timer = 0;
 		max_hold = !max_hold;
 		break;
 	case KPWR:
@@ -464,6 +477,7 @@ void main(void) {
 
 reset:
 	sleepy = 0;
+	sleep_timer = 0;
 
 	xtalClock();
 	setIOPorts();
@@ -498,6 +512,9 @@ reset:
 		}
 
 		poll_keyboard();
+
+		if((sleep_timer++)>25*60*5) // 25 == ~1 second, 5 minute timeout
+			sleepy = 1;
 
 		/* go to sleep (more or less a shutdown) if power button pressed */
 		if (sleepy) {
