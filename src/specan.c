@@ -434,7 +434,14 @@ void poll_keyboard() {
 		max_hold = !max_hold;
 		break;
 	case KPWR:
-		sleepy = 1;
+		{
+			u8 i;
+			// Must hold down power for 1/2 of a second
+			// to power off.
+			for(i=250;i && (KPWR==keyscan());--i)
+				sleepMillis(2);
+			sleepy = !i;
+		}
 		break;
 	default:
 		break;
@@ -498,7 +505,18 @@ reset:
 			SSN = LOW;
 			LCDPowerSave();
 			SSN = HIGH;
+back_to_sleep:
 			sleep();
+
+			{
+				u8 i;
+				// Must hold down power for 1/2 of a second
+				// to power on.
+				for(i=250;i && (KPWR==keyscan());--i)
+					sleepMillis(2);
+				if(i)
+					goto back_to_sleep;
+			}
 			/* reset on wake */
 			goto reset;
 		}
