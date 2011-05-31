@@ -115,6 +115,15 @@ void plot(u8 col) {
 	SSN = HIGH;
 }
 
+void clear_ruler() {
+	u8 col;
+	SSN = LOW;
+	setCursor(7, 0);
+	for (col = 0; col < WIDTH; col++)
+		txData(0x00);
+	SSN = HIGH;
+}
+
 void draw_ruler() {
 	u8 col;
 	u8 offset = 0;
@@ -385,7 +394,11 @@ u16 set_center_freq(u16 freq) {
 	}
 
 	center_freq = freq;
+#if 0
+	clear_ruler();
+#else
 	clear();
+#endif
 	draw_ruler();
 	draw_freq();
 	//max_hold = 0;
