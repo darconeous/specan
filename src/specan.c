@@ -35,10 +35,45 @@ u8 width;
 bit max_hold;
 bit height;
 bit sleepy;
+bit median;
 u8 vscroll;
 u8 min_chan;
 u8 max_chan;
 u32 sleep_timer;
+
+u8 median_u8(u8 a, u8 b, u8 c) {
+	// 1 2 3 ... 2
+	// 1 3 2 ... 3
+	// 3 2 1 ... 2
+	// 3 1 2 ... 3
+	// 2 3 1 ... 1
+	// 2 1 3 ... 1
+	if(a<c) {
+		// 1 2 3
+		// 1 3 2
+		// 2 1 3
+		if(a>b) {
+			// 2 1 3
+			b = a;
+		} else if(c<b) {
+			// 1 3 2
+			b = c;
+		}
+	} else {
+		// 3 2 1
+		// 2 3 1
+		// 3 1 2
+		if(a<b) {
+			// 3 1 2
+			b = a;
+		} else if(c>b) {
+			// 2 3 1
+			b = c;
+		}
+	}
+	return b;
+}
+
 
 /* plot one value of bar chart */
 void plot(u8 col) {
@@ -50,12 +85,20 @@ void plot(u8 col) {
 	SSN = LOW;
 	setDisplayStart(0);
 
-	if (height == TALL) {
-		m = MAX((chan_table[col].max - vscroll), 0);
-		s = MAX((chan_table[col].ss - vscroll), 0);
-	} else {
-		s = MAX((chan_table[col].ss - vscroll) >> 2, 0);
-		m = MAX((chan_table[col].max - vscroll) >> 2, 0);
+	m = chan_table[col].max;
+	s = chan_table[col].ss;
+
+	if(median && col && (col<NUM_CHANNELS)) {
+		s = median_u8(chan_table[col-1].ss,s,chan_table[col+1].ss);
+		m = median_u8(chan_table[col-1].max,m,chan_table[col+1].max);
+	}
+
+	s = MAX(s - vscroll, 0);
+	m = MAX(m - vscroll, 0);
+
+	if (height != TALL) {
+		s >>= 2;
+		m >>= 2;
 	}
 
 	for (row = 0; row < 6; row++) {
@@ -446,6 +489,10 @@ void poll_keyboard() {
 		sleep_timer = 0;
 		max_hold = !max_hold;
 		break;
+	case 'F':
+		sleep_timer = 0;
+		median = !median;
+		break;
 	case KPWR:
 		{
 			u8 i;
@@ -474,6 +521,7 @@ void main(void) {
 	vscroll = 0;
 	min_chan = 0;
 	max_chan = NUM_CHANNELS - 1;
+	median = 1;
 
 reset:
 	sleepy = 0;
