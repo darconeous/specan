@@ -25,8 +25,10 @@ all: specan.hex
 %.rel : %.c
 	$(CC) $(CFLAGS) -c $<
 
-specan.hex: specan.rel $(libs)
+specan.ihx: specan.rel $(libs)
 	sdcc $(LFLAGS) specan.rel $(libs)
+
+specan.hex: specan.ihx
 	packihx <specan.ihx >specan.hex
 
 install: specan.hex
