@@ -548,25 +548,30 @@ reset:
 	set_width(width);
 
 	while (1) {
-		for (ch = min_chan; ch < max_chan; ch++) {
+		for (ch = 0; ch < NUM_CHANNELS; ch++) {
+			u8 chan = update_order[ch];
+
+			if((chan<min_chan) || (chan>max_chan))
+				continue;
+
 			/* tune radio and start RX */
-			tune(ch);
+			tune(chan);
 			RFST = RFST_SRX;
 
 			/* plot previous measurement while waiting for RSSI measurement */
-			plot(ch);
+			plot(chan);
 
 			/* measurement needs a bit more time in narrow mode */
 			if (width == NARROW)
 				for (i = 350; i-- ;);
 
 			/* read RSSI */
-			chan_table[ch].ss = (RSSI ^ 0x80);
+			chan_table[chan].ss = (RSSI ^ 0x80);
 			if (max_hold)
-				chan_table[ch].max = MAX(chan_table[ch].ss,
-						chan_table[ch].max);
+				chan_table[chan].max = MAX(chan_table[chan].ss,
+						chan_table[chan].max);
 			else
-				chan_table[ch].max = 0;
+				chan_table[chan].max = 0;
 
 			/* end RX */
 			RFST = RFST_SIDLE;
