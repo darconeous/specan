@@ -344,7 +344,7 @@ u16 set_center_freq(u16 freq) {
 	clear();
 	draw_ruler();
 	draw_freq();
-	max_hold = 0;
+	//max_hold = 0;
 
 	return freq;
 }
@@ -452,24 +452,25 @@ void main(void) {
 	u8 ch;
 	u16 i;
 
-reset:
 	center_freq = DEFAULT_FREQ;
 	user_freq = DEFAULT_FREQ;
 	band = BAND_900;
 	width = WIDE;
 	max_hold = 0;
 	height = 0;
-	sleepy = 0;
 	vscroll = 0;
 	min_chan = 0;
 	max_chan = NUM_CHANNELS - 1;
+
+reset:
+	sleepy = 0;
 
 	xtalClock();
 	setIOPorts();
 	configureSPI();
 	LCDReset();
 	radio_setup();
-	set_width(WIDE);
+	set_width(width);
 
 	while (1) {
 		for (ch = min_chan; ch < max_chan; ch++) {
