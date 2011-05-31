@@ -501,8 +501,18 @@ reset:
 
 		/* go to sleep (more or less a shutdown) if power button pressed */
 		if (sleepy) {
+			u8 accum=0;
 			clear();
-			sleepMillis(1000);
+
+			for(ch=255;ch!=0;--ch) {
+				u8 i;
+				for(i=0;i<4;++i) {
+					LCD_BACKLIGHT = ((u8)(accum+ch)<accum);
+					accum+=ch;
+					sleepMillis(2);
+				}
+			}
+
 			SSN = LOW;
 			LCDPowerSave();
 			SSN = HIGH;
