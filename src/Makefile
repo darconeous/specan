@@ -15,26 +15,40 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 
-libs = display.rel keys.rel pm.rel
 CC = sdcc
-CFLAGS = --no-pack-iram
-LFLAGS = --xram-loc 0xF000
+LD = sdcc
+CFLAGS	:= --no-pack-iram
+LDFLAGS	:= --xram-loc 0xF000
 
 all: specan.hex
-
-%.rel : %.c
-	$(CC) $(CFLAGS) -c $<
-
-specan.ihx: specan.rel $(libs)
-	sdcc $(LFLAGS) specan.rel $(libs)
-
-specan.hex: specan.ihx
-	packihx <specan.ihx >specan.hex
 
 install: specan.hex
 	goodfet.cc erase
 	goodfet.cc flash specan.hex
+
 verify: specan.hex
 	goodfet.cc verify specan.hex
+
 clean:
 	rm -f *.hex *.ihx *.rel *.asm *.lst *.rst *.sym *.lnk *.map *.mem
+
+########################################
+### Implicit Rules
+
+%.rel : %.c
+	$(CC) $(CFLAGS) -c $<
+
+%.ihx: %.rel
+	$(LD) $(LDFLAGS) $^
+
+%.hex: %.ihx
+	packihx <$< >$@
+
+########################################
+### Dependencies
+
+display.rel : display.c display.h ioCCxx10_bitdef.h bits.h types.h 5x7.h
+keys.rel : keys.c keys.h bits.h types.h
+pm.rel : pm.c ioCCxx10_bitdef.h bits.h types.h
+specan.rel: specan.c specan.h display.h keys.h pm.h ioCCxx10_bitdef.h
+specan.ihx: specan.rel display.rel keys.rel pm.rel
