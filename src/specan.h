@@ -59,7 +59,7 @@
 #define DEFAULT_FREQ     915
 #define WIDE_STEP        5
 #define NARROW_STEP      1
-#define ULTRAWIDE_STEP   20
+#define ULTRAWIDE_STEP   10
 #define WIDE_MARGIN      13
 #define NARROW_MARGIN    3
 #define ULTRAWIDE_MARGIN 42
