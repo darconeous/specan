@@ -290,7 +290,7 @@ u16 set_center_freq(u16 freq) {
 		spacing = ULTRAWIDE_SPACING;
 
 		/* nearest 20 MHz step */
-		freq = ((freq + 10) / 20) * 20;
+		freq = ((freq + (ULTRAWIDE_STEP/2)) / ULTRAWIDE_STEP) * ULTRAWIDE_STEP;
 		break;
 	default:
 		margin = WIDE_MARGIN;
@@ -298,7 +298,7 @@ u16 set_center_freq(u16 freq) {
 		spacing = WIDE_SPACING;
 
 		/* nearest 5 MHz step */
-		freq = ((freq + 2) / 5) * 5;
+		freq = ((freq + (WIDE_STEP/2)) / WIDE_STEP) * WIDE_STEP;
 		break;
 	}
 
