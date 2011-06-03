@@ -30,6 +30,7 @@
 #define WIDE 0
 #define NARROW 1
 #define ULTRAWIDE 2
+#define VERYNARROW 3
 
 /*
  * Normal IM-ME devices have a 26 MHz crystal, but
@@ -60,9 +61,11 @@
 #define WIDE_STEP        5
 #define NARROW_STEP      1
 #define ULTRAWIDE_STEP   10
+#define VERYNARROW_STEP  1
 #define WIDE_MARGIN      13
 #define NARROW_MARGIN    3
 #define ULTRAWIDE_MARGIN 42
+#define VERYNARROW_MARGIN 3
 
 /* frequency bands supported by device */
 #define BAND_300 0
@@ -97,6 +100,7 @@
 #endif
 
 /* channel spacing in Hz */
+#define VERYNARROW_SPACING	(u32)(25000*SPACING_FUDGE)	// 25kHz
 #define NARROW_SPACING		(u32)(50000*SPACING_FUDGE)	// 50kHz
 #define WIDE_SPACING		(u32)(200000*SPACING_FUDGE)	// 200kHz
 #define ULTRAWIDE_SPACING	(u32)(666667*SPACING_FUDGE)	// 667kHz
