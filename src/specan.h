@@ -86,10 +86,20 @@
 #define MID_400  424000000
 #define MID_900  848000000
 
+/*
+ * The original channel spacing values were
+ * all uniformally scaled by 0.99976 from the
+ * values described in the readme. I've pulled
+ * it out here for experimentation purposes.
+ */
+#ifndef SPACING_FUDGE
+#define SPACING_FUDGE		(1.0)
+#endif
+
 /* channel spacing in Hz */
-#define WIDE_SPACING      199952
-#define NARROW_SPACING    49988
-#define ULTRAWIDE_SPACING 666504
+#define NARROW_SPACING		(u32)(50000*SPACING_FUDGE)	// 50kHz
+#define WIDE_SPACING		(u32)(200000*SPACING_FUDGE)	// 200kHz
+#define ULTRAWIDE_SPACING	(u32)(666667*SPACING_FUDGE)	// 667kHz
 
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
