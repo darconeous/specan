@@ -18,10 +18,10 @@
  */
 
 #include <cc1110.h>
+#include <stdio.h>
 #include "ioCCxx10_bitdef.h"
 #include "display.h"
 #include "keys.h"
-#include "stdio.h"
 #include "specan.h"
 #include "pm.h"
 
@@ -40,34 +40,19 @@ u8 min_chan;
 u8 max_chan;
 u32 sleep_timer;
 
+/* Returns the median value of the given three parameters */
 u8 median_u8(u8 a, u8 b, u8 c) {
-	// 1 2 3 ... 2
-	// 1 3 2 ... 3
-	// 3 2 1 ... 2
-	// 3 1 2 ... 3
-	// 2 3 1 ... 1
-	// 2 1 3 ... 1
 	if(a<c) {
-		// 1 2 3
-		// 1 3 2
-		// 2 1 3
-		if(a>b) {
-			// 2 1 3
-			b = a;
+		if(b<a) {
+			return a;
 		} else if(c<b) {
-			// 1 3 2
-			b = c;
+			return c;
 		}
 	} else {
-		// 3 2 1
-		// 2 3 1
-		// 3 1 2
 		if(a<b) {
-			// 3 1 2
-			b = a;
-		} else if(c>b) {
-			// 2 3 1
-			b = c;
+			return a;
+		} else if(b<c) {
+			return c;
 		}
 	}
 	return b;
@@ -209,7 +194,8 @@ void radio_setup() {
 	TEST1 = 0x31;
 	TEST0 = 0x09;
 
-	/* no automatic frequency calibration */
+	/* no automatic frequency calibration, or attenuation */
+	/* TODO: Automatic attenuation adjust */
 	MCSM0 = 0;
 }
 
