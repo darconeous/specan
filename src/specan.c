@@ -494,7 +494,7 @@ void poll_keyboard() {
 		break;
 	case 'H':
 		// Hold as long as 'H' is pressed.
-		while(keyscan()=='H')
+		while(keyscan()==(u8)'H')
 			sleep_timer = 0;
 		break;
 	case KPWR:
