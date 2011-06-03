@@ -32,6 +32,17 @@
 #define ULTRAWIDE 2
 
 /*
+ * Normal IM-ME devices have a 26 MHz crystal, but
+ * some of them are shipping with 27 MHz crystals.
+ * Use this preprocessor macro to compensate if your
+ * IMME is so afflicted. See this link for more info:
+ * <http://madscientistlabs.blogspot.com/2011/03/fix-for-im-me-specan-frequency-offset.html>
+ */
+#ifndef FREQ_REF
+#define FREQ_REF	(26000000)
+#endif
+
+/*
  * short mode (default): displays RSSI >> 2
  * tall mode: displays RSSI
  */

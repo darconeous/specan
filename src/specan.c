@@ -217,8 +217,9 @@ void set_filter() {
 
 /* set the radio frequency in Hz */
 void set_radio_freq(u32 freq) {
-	/* the frequency setting is in units of 396.728515625 Hz */
-	u32 setting = (u32) (freq * .0025206154);
+	/* the frequency setting is in units of FREQ_REF/(2^16) Hz,
+	 * which is 396.728515625Hz w/FREQ_REF==26MHz. */
+	u32 setting = (u32) (freq * (65536.0f/FREQ_REF) );
 	FREQ2 = (setting >> 16) & 0xff;
 	FREQ1 = (setting >> 8) & 0xff;
 	FREQ0 = setting & 0xff;
